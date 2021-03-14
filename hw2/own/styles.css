@@ -64,6 +64,10 @@ body {
 	flex-wrap: wrap;
 	align-items: center;
 	font-size: 0.6rem;
+	overflow: hidden;
+	background-image: url(./images/loading.gif);
+	background-position: center;
+	background-repeat: no-repeat;
 }
 
 .image-viewer__display-source-wrapper {
@@ -90,10 +94,18 @@ body {
 }
 
 .disabled {
+	display: inline;
+	background: none;
+	border: none;
+	border-radius: 50%;
+	width: 100px;
 	opacity: 0.2;
 }
 
-.disabled:hover {
-	border-color: transparent !important;
+.disabled img {
+	width: 80px;
+	height: 80px;
+	border: 1px solid transparent;
+	border-radius: 50%;
 	cursor: not-allowed;
 }
