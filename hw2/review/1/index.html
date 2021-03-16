@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Image Viewer</title>
+        <link
+            rel="stylesheet"
+            type="text/css"
+            media="screen"
+            href="styles.css"
+        />
+    </head>
+    <body onload=" init()">
+        <!-- Try to implement an HTML that looks like the reference example:
+        ./images/screenshot.png  -->
+        <!-- Please use the class names and IDs as defined in styles.css
+         so that the outlook can be the same as the reference. -->
+        
+         <!-- 引用js檔--><script src="main.js"></script>
+
+        <div class="image-viewer__container">
+            <div class="image-viewer__title"> Image Viewer </div>
+            <div class="image-viewer__main">
+                <div class="image-viewer__button"  onclick="clickPre()"  >
+                    <img src="./images/back.png" id="previous" alt="">
+                </div>
+                <div class="image-viewer__display" id="display_div" >
+
+                    <img src="" id="display" height="50px" width="50px" alt="" >
+
+                    <div class="image-viewer__display-source-wrapper">
+                        <span>Source:
+                            <a href="" id="link">000000</a>
+                        </span>
+                    </div>
+
+                </div>
+                <div class="image-viewer__button"  onclick="clickNext()"   >
+                    <img src="./images/next.png"  id="next" alt="" >
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+
+    </body>
+</html>
