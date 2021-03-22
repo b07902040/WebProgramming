@@ -17,5 +17,5 @@ WP109-2 HW2 Review Result
 	- 部分符合作業要求 (Pass, 至少有做到題目要求的 baseline 功能)
 
 - 簡單評論
-	- loading沒有背景
+	- 沒有loading gif
 
