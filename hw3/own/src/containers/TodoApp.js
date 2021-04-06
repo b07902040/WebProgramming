@@ -46,18 +46,19 @@ class TodoApp extends Component {
     }
   }
 
-  deleteTodo(Seq, all) {
+  deleteTodo(Seq) {
     var newAllTodo = this.state.allTodo.slice();
     var com = (Complete[Seq] === 0) ? this.state.comNum : this.state.comNum-1;
+    var left = (Complete[Seq] === 1) ? this.state.leftNum : this.state.leftNum-1;
     Complete[Seq] = 0;
     newAllTodo.splice(Reg[Seq], 1);
-    for ( let i = Reg[Seq]+1; i < this.state.seqNum; i++ ) {
+    for ( let i = Seq+1; i < this.state.seqNum; i++ ) {
       Reg[i]--;
     }
     this.setState({
       allTodo: newAllTodo,
       listNum: this.state.listNum-1,
-      leftNum: this.state.leftNum-1,
+      leftNum: left,
       comNum: com,
       presentAll: (this.state.listNum===1? 'none' : ''),
     });
@@ -70,7 +71,7 @@ class TodoApp extends Component {
       if ( Complete[Seq] === 1 ) {
         Complete[Seq] = 0;
         newAllTodo.splice(Reg[Seq], 1);
-        for ( let i = Reg[Seq]+1; i < this.state.seqNum; i++ ) {
+        for ( let i = Seq+1; i < this.state.seqNum; i++ ) {
           Reg[i]--;
         }
         cnt++;
@@ -79,7 +80,6 @@ class TodoApp extends Component {
     this.setState({
       allTodo: newAllTodo,
       listNum: this.state.listNum - cnt,
-      leftNum: this.state.leftNum - cnt,
       comNum: this.state.comNum - cnt,
       presentAll: (this.state.listNum===cnt? 'none' : ''),
     });
@@ -88,17 +88,22 @@ class TodoApp extends Component {
   CompleteTodo(Seq) {
     if ( Complete[Seq] === 0 ) {
       Complete[Seq] = 1;
-      this.setState({ comNum: this.state.comNum+1 });
+      this.setState({ 
+        leftNum: this.state.leftNum-1,
+        comNum: this.state.comNum+1,
+      });
     }
     else {
       Complete[Seq] = 0;
-      this.setState({ comNum: this.state.comNum-1 });
+      this.setState({ 
+        leftNum: this.state.leftNum+1,
+        comNum: this.state.comNum-1 
+      });
     }
   }
 
   showState(state) {
     var newAllTodo = this.state.allTodo.slice();
-    var num = 0;
     if ( state === 'Complete' ) {
       for ( let i = 0; i < newAllTodo.length; i++ ) {
         if ( Complete[newAllTodo[i].Seq] === 0 ) {
@@ -106,7 +111,6 @@ class TodoApp extends Component {
         }
         else {
           newAllTodo[i].Display = '';
-          num++;
         }
       }
     }
@@ -114,7 +118,6 @@ class TodoApp extends Component {
       for ( let i = 0; i < newAllTodo.length; i++ ) {
         if ( Complete[newAllTodo[i].Seq] === 0 ) {
           newAllTodo[i].Display = '';
-          num++;
         }
         else {
           newAllTodo[i].Display = 'none';
@@ -124,13 +127,21 @@ class TodoApp extends Component {
     else {
       for ( let i = 0; i < newAllTodo.length; i++ ) {
         newAllTodo[i].Display = '';
-        num++
       }
     }
     this.setState({
-      allTodo: newAllTodo,
-      leftNum: num,
+      allTodo: newAllTodo
     });
+  }
+
+  clearAll() {
+    this.setState({
+			listNum: 0,
+      leftNum: 0,
+      comNum: 0,
+      presentAll: 'none',
+      allTodo: [],
+		});
   }
 
   render() {
@@ -161,7 +172,8 @@ class TodoApp extends Component {
           display={this.state.presentAll}
           comNum={this.state.comNum}
           showState={this.showState}
-          clearClick={this.clearCom.bind(this)}
+          clearComClick={this.clearCom.bind(this)}
+          clearAllClick={this.clearAll.bind(this)}
         />
       </>
     );

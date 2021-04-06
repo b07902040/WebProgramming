@@ -28,8 +28,9 @@ export default class Footer extends Component {
 						<button onClick={()=>this.show('Complete')} >Completed</button>
 					</li>
 				</ul>
-				<div className="todo-app__clean" style={{visibility:haveCom}}>
-					<button onClick={this.props.clearClick}>Clear completed</button>
+				<div className="todo-app__clean">
+					<button onClick={this.props.clearComClick} style={{visibility:haveCom}}>Clear completed</button>
+					<button onClick={this.props.clearAllClick}>Clear all</button>
 				</div>
 			</footer>
 		);
