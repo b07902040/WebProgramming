@@ -92,6 +92,7 @@ input[type='checkbox'] {
     background: white;
     border: 1px solid rgba(0, 0, 0, 0.089);
     border-top: 0;
+    display: '';
 }
 
 .todo-app__checkbox {
