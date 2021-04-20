@@ -19,12 +19,17 @@ class MergeSchool extends Component {
                     [0,0,0,0],
                     [0,0,0,0],
                     [2,2,0,0]], // the 4*4 board
+            newlyBoard: [[0,0,0,0],
+                         [0,0,0,0],
+                         [0,0,0,0],
+                         [1,1,0,0]],
             qs_ranking: 32768, // qs ranking now 
             best_qs_ranking: 32768, // the best ranking
             gameover: false, // flag for game over
             step: 0, // step
             win: false, // flag for win i.e. get a "65536" grid
-            seed: secret_seed
+            seed: secret_seed,
+            first: true,
         };
     }
 
@@ -57,7 +62,8 @@ class MergeSchool extends Component {
             gameover: false, // flag for game over
             step: 0, // step
             win: false, // flag for win i.e. get a "65536" grid
-            seed: secret_seed
+            seed: secret_seed,
+            first: true,
         });
         // #########################
         // # 7 Add something yourself
@@ -86,6 +92,14 @@ class MergeSchool extends Component {
         } 
         let random_empty_grid = empty_grid[random_num];
         board[random_empty_grid[0]][random_empty_grid[1]] = 2;
+        let nowNewlyBoard = [[0,0,0,0],
+                     [0,0,0,0],
+                     [0,0,0,0],
+                     [0,0,0,0]];
+        nowNewlyBoard[random_empty_grid[0]][random_empty_grid[1]] = 1;
+        this.setState({
+            newlyBoard: nowNewlyBoard
+        });
         return {board};
     }
     
@@ -150,10 +164,10 @@ class MergeSchool extends Component {
             // # 7 Implement yourself
             // #########################
             if (this.checkWin()) {
-                this.setState({win: true, gameover: true});
+                this.setState({win: true, gameover: true, first: false,});
             }
             else if (this.checkGameover(nextBoardSetWithRandom.board)) {
-                this.setState({gameover: true});
+                this.setState({gameover: true, first: false,});
             }
             
         }
@@ -215,7 +229,6 @@ class MergeSchool extends Component {
         // # 8 Implement yourself
         // #########################
         let board = this.rotateClockwise(prevBoard);
-        let combination = 0;
         let ret = this.moveRight(board);
         ret.board = this.rotateClockwise(ret.board);
         ret.board = this.rotateClockwise(ret.board);
@@ -231,7 +244,6 @@ class MergeSchool extends Component {
         let board = this.rotateClockwise(prevBoard);
         board = this.rotateClockwise(board);
         board = this.rotateClockwise(board);
-        let combination = 0;
         let ret = this.moveRight(board);
         ret.board = this.rotateClockwise(ret.board);
         return ret;
@@ -244,7 +256,6 @@ class MergeSchool extends Component {
         // #########################
         let board = this.rotateClockwise(prevBoard);
         board = this.rotateClockwise(board);
-        let combination = 0;
         let ret = this.moveRight(board);
         ret.board = this.rotateClockwise(ret.board);
         ret.board = this.rotateClockwise(ret.board);
@@ -291,7 +302,7 @@ class MergeSchool extends Component {
             cnt++;
         }
         console.log(cnt);
-        if ( cnt == 4 ) {
+        if ( cnt === 4 ) {
             return true;
         }
         return false;
@@ -301,7 +312,7 @@ class MergeSchool extends Component {
     checkWin = () => {
         for ( let i = 0; i < 4; i++ ) {
             for ( let j = 0; j < 4; j++ ) {
-                if ( this.state.board[i][j] == 65536 ) {
+                if ( this.state.board[i][j] === 65536 ) {
                     return true;
                 }
             }
@@ -367,10 +378,12 @@ class MergeSchool extends Component {
                 />
                 <Board2048 
                     className="wrapper" 
-                    board={this.state.board} 
+                    board={this.state.board}
+                    newlyBoard={this.state.newlyBoard}
                     gameOver={this.state.gameover}
                     newClick={this.initializeBoard.bind(this)}
                     win={this.state.win}
+                    first={this.state.first}
                 />
                 <div className="btn-groups">
                     <div className="btn-useful" id="badend-btn" onClick={this.setBadEnd}>BadEnd</div>

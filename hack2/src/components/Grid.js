@@ -1,4 +1,4 @@
-export default function Grid ( {value, row_i, col_j} ) {
+export default function Grid ( {value, row_i, col_j, newly} ) {
     
     let grid_id = `grid-${row_i}-${col_j}`;
     let value_id = `value-${row_i}-${col_j}`;
@@ -8,7 +8,12 @@ export default function Grid ( {value, row_i, col_j} ) {
 				temp_class_name = 'grid';
     }
     else {
-        temp_class_name = `grid level-${value}`;
+			if ( newly ) {
+        temp_class_name = `school-fade-in grid level-${value}`;
+			}
+			else {
+				temp_class_name = `grid level-${value}`;
+			}
     }
 		let map = new Map();
 		map.set('',"");
