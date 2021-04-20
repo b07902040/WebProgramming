@@ -1,14 +1,17 @@
 import Row from './Row'
 
-export default function Board2048 ({ board , gameOver , newClick}) {
+export default function Board2048 ({ board , gameOver , newClick, win}) {
 
     let boardClassName = "board";
-    let infoClassName = "info";
+    let infoClassName = "info end-fade-in";
     if ( gameOver ) {
         boardClassName = "game-over-board";
-        infoClassName = "game-over-info";
+        infoClassName = "game-over-info end-fade-in";
     }
     let outSentence = "No funding this year QAO";
+    if ( win ) {
+        outSentence = "You should study a PhD!";
+    }
     let phdSentence = "You should study a PhD!";
     
     return (

@@ -149,10 +149,13 @@ class MergeSchool extends Component {
             // #########################
             // # 7 Implement yourself
             // #########################
-
-            if (this.checkGameover(nextBoardSetWithRandom.board)) {
+            if (this.checkWin()) {
+                this.setState({win: true, gameover: true});
+            }
+            else if (this.checkGameover(nextBoardSetWithRandom.board)) {
                 this.setState({gameover: true});
             }
+            
         }
         else {
             let qsRankNow = this.state.qs_ranking;
@@ -295,10 +298,14 @@ class MergeSchool extends Component {
     };
 
     // Check if it is win
-    checkWin = (board) => {
-        // #########################
-        // # 10 Implement yourself
-        // #########################
+    checkWin = () => {
+        for ( let i = 0; i < 4; i++ ) {
+            for ( let j = 0; j < 4; j++ ) {
+                if ( this.state.board[i][j] == 65536 ) {
+                    return true;
+                }
+            }
+        }
         return false;
     };
 
@@ -363,6 +370,7 @@ class MergeSchool extends Component {
                     board={this.state.board} 
                     gameOver={this.state.gameover}
                     newClick={this.initializeBoard.bind(this)}
+                    win={this.state.win}
                 />
                 <div className="btn-groups">
                     <div className="btn-useful" id="badend-btn" onClick={this.setBadEnd}>BadEnd</div>
