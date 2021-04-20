@@ -1,14 +1,12 @@
-import React, { Component } from "react";
+import React, { useState } from 'react';
 import Table from "../components/Table";
 
-class FakeSheet extends Component {
-    render() {
-        return (
-            <>
-                <Table />
-            </>
-        );
-    }
+function FakeSheet() {
+    return (
+        <>
+            <Table />
+        </>
+    );
 }
 
 export default FakeSheet;
