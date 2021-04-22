@@ -1,0 +1,125 @@
+* {
+  box-sizing: border-box;
+}
+
+.header {
+  height: 40px;
+  display: flex;
+  background-color: rgb(235, 235, 235);
+}
+
+.buttons_top {
+  height: 100%;
+  width: 80px;
+  margin-left: 92px;
+  display: flex;
+}
+
+.button_big {
+  line-height: 35px;
+  text-align: center;
+  border: solid rgb(185, 185, 185) 1px;
+  background-color: white;
+  font-size: 20px;
+}
+
+.button_top {
+  line-height: 35px;
+  width: 40px;
+}
+
+.section {
+  width: 100%;
+  height: 640px;
+  display: flex;
+}
+
+.left {
+  width: 40px;
+  background-color: rgb(235, 235, 235);
+}
+
+.buttons_left {
+  height: 100%;
+  width: 40px;
+  margin-top: 26px;
+}
+
+.button_left {
+  height: 40px;
+  width: 100%;
+}
+
+.table {
+  width: 100%;
+  height: 100%;
+  overflow: scroll;
+  overflow-x: scroll;
+  border: 2px solid rgb(121, 121, 121);
+}
+
+table {
+  display: block;
+  border-collapse: collapse;
+  font-size: 15px;
+  width: 100%;
+  
+}
+
+tr {
+  border: 1px solid rgb(237, 237, 237);
+}
+
+th {
+  background-color: rgb(248, 249, 250);
+  border: 1px solid rgb(210, 210, 211);
+  color: rgb(98, 101, 106);
+  height: 25px;
+}
+
+.table_left {
+  min-width: 50px;
+}
+
+.table_top {
+  min-width: 100px;
+}
+
+.selected {
+  background-color: rgb(232, 234, 237);
+}
+
+td {
+  border: 1px solid rgb(237, 237, 237);
+  text-align: center;
+  height: 25px;
+  vertical-align: middle;
+}
+
+.innertext {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border: none;
+  padding: 0;
+  background-color: white;
+  position: relative;
+  font-size: 15px;
+}
+
+.innertext:focus {
+  outline: solid 2px rgb(57, 117, 224);
+}
+
+/* .innertext.focus {
+  outline: solid 2px rgb(57, 117, 224);
+} */
+
+input {
+  height: 100%;
+  width: 100%;
+  /* background-color: transparent; */
+  border: 0px solid;
+  outline: none;
+  font-size: 15px;
+}
