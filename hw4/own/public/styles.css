@@ -10,29 +10,22 @@ body {
   
 .table-wrapper {
     overflow: scroll;
-}
-
-table {
     border: 1px solid #ccc;
     border-collapse: collapse;
 }
-  
-td, th {
-    border: 1px solid #ccc;
-    height: 30px;
-    width: 100px;
-    padding: 0px;
-}
-
-tbody tr td:first-of-type {
-    background-color: #eee;
-    text-align: center;
-}
-
+    
 th {
     background-color: #eee;
     text-align: center;
-    font-weight: 400;
+    border: 1px solid #ccc;
+    height: 20px;
+    width: 70px;
+}
+  
+td {
+    border: 1px solid #ccc;
+    height: 20px;
+    width: 70px;
 }
 
 button {
@@ -53,6 +46,35 @@ button {
 .c0 {
     background-color: #ddd;
     width: 30px;
+}
+
+.cell-input {
+    border: none;
+    width:70px;
+    height:20px;
+}
+
+input:focus {
+    outline: none;
+    border: 1.5px solid blue;
+    border-radius: 2px;
+}
+
+.firstCol {
+    background-color: #eee;
+    text-align: center;
+}
+
+.firstRow {
+    background-color: #eee;
+    text-align: center;
+    border: 1px solid #ccc;
+    height: 20px;
+    width: 70px;
+}
+
+.focusRC {
+    background-color: #888;
 }
 
 #top-left {
