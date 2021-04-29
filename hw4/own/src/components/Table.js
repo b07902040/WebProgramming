@@ -19,8 +19,8 @@ function idxToAlpha(idx) {
 }
 
 function Table() {
-  const [rowNum, setRowNum] = useState(100);
-  const [colNum, setColNum] = useState(26);
+  const [rowNum, setRowNum] = useState(5);
+  const [colNum, setColNum] = useState(4);
   const [fcs, setFcs] = useState([-1, -1])
   const initCells = [];
   for (let i = 0; i < rowNum; i++) {
@@ -33,8 +33,8 @@ function Table() {
   
   function handleCellClick(i, j) {
     var focusCell = document.getElementById(idxToAlpha(j) + (i+1));
-    var focusRow = document.getElementById("Row" + idxToAlpha(j));
-    var focusCol = document.getElementById("Col" + (i+1));
+    var focusCol = document.getElementById("Col" + idxToAlpha(j));
+    var focusRow = document.getElementById("Row" + (i+1));
     focusRow.classList.add("focusRC");
     focusCol.classList.add("focusRC");
     if ( Cells[i][j].clickTime === 0 ) {
@@ -53,9 +53,10 @@ function Table() {
   }
 
   function handleCellBlur(i, j) {
+    if ( fcs[0] === -1 || fcs[1] === -1 ) return;
     var focusCell = document.getElementById(idxToAlpha(j) + (i+1));
-    var focusRow = document.getElementById("Row" + idxToAlpha(j));
-    var focusCol = document.getElementById("Col" + (i+1));
+    var focusCol = document.getElementById("Col" + idxToAlpha(j));
+    var focusRow = document.getElementById("Row" + (i+1));
     focusRow.classList.remove("focusRC");
     focusCol.classList.remove("focusRC");
     let newCells = Cells.slice();
@@ -100,31 +101,79 @@ function Table() {
     setColNum(colNum+1);
   }
 
-  function delCol() {
-
-  }
-
   function addRow() {
-    if ( fcs[0] === -1 ) {
-      let newCells = Cells.slice();
-      var newRow = [];
-      for (let j = 0; j < colNum; j++) {
-        newRow.push(new cell());
-      }
-      newCells.push(newRow);
-      setCells(newCells);
+    let newCells = Cells.slice();
+    var newRow = [];
+    for (let j = 0; j < colNum; j++) {
+      newRow.push(new cell());
     }
+    newCells.push(newRow);
+    setCells(newCells);
+
+    
     setRowNum(rowNum+1);
   }
 
-  function delRow() {
-
+  function delCol() {
+    if ( fcs[1] !== -1 ) {
+      var fcsRow = document.getElementById("Row" + (fcs[0] + 1));
+      var fcsCol = document.getElementById("Col" + idxToAlpha(fcs[1]));
+      fcsCol.classList.remove("focusRC");
+      fcsRow.classList.remove("focusRC");
+      var newCells = Cells.slice();
+      for (let i = 0; i < rowNum; i++) {
+        Cells[i].splice(fcs[1], 1);
+      }
+      setCells(newCells);
+      setFcs([-1, -1]);
+      setColNum(colNum-1);
+    }
   }
+
+  function passCell (src_i, src_j, tar_i, tar_j) {
+    for (let prop in Cells[src_i][src_j]) {
+      if (prop !== undefined) {
+        var newCells = Cells.slice();
+        newCells[tar_i][tar_j][prop] = newCells[src_i][src_j][prop];
+        setCells(newCells);
+      }
+    }
+  }
+
+  function delRow() {
+    if ( fcs[0] !== -1 ) {
+      var fcsRow = document.getElementById("Row" + (fcs[0] + 1));
+      var fcsCol = document.getElementById("Col" + idxToAlpha(fcs[1]));
+      fcsCol.classList.remove("focusRC");
+      fcsRow.classList.remove("focusRC");
+
+      for (let i = fcs[0]; i < rowNum - 1; i++) {
+        for (let j = 0; j < colNum; j++) {
+          passCell(i+1, j, i, j);
+        }
+      }
+      var newCells = Cells.slice();
+      Cells.splice(rowNum - 1, 1);
+      setCells(newCells);
+      setFcs([-1, -1]);
+      setRowNum(rowNum-1);
+    }
+  }
+
+  useEffect(() => {
+    for (let i = 0; i < rowNum; i++) {
+      for (let j = 0; j < colNum; j++) {
+        var focusCell = document.getElementById(idxToAlpha(j) + (i+1));
+        focusCell.value = Cells[i][j].content;
+      }
+    }
+  }, [Cells]);
+
 
   //render
   var firstRow = [];
   for ( let j = -1; j < colNum; j++ ) {
-    firstRow.push(<th className="firstRow" id={"Row" + idxToAlpha(j)}>{idxToAlpha(j)}</th>);
+    firstRow.push(<th className="firstRow" id={"Col" + idxToAlpha(j)}>{idxToAlpha(j)}</th>);
   }
 
   var rows = [];
@@ -146,7 +195,7 @@ function Table() {
         </td>
       );
     });
-    arow.unshift(<th id={"Col"+(i+1)} className="firstCol">{i+1}</th>);
+    arow.unshift(<th id={"Row"+(i+1)} className="firstCol">{i+1}</th>);
     rows = rows.concat([arow]);
   }
 
