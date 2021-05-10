@@ -19,8 +19,8 @@ function idxToAlpha(idx) {
 }
 
 function Table() {
-  const [rowNum, setRowNum] = useState(5);
-  const [colNum, setColNum] = useState(4);
+  const [rowNum, setRowNum] = useState(100);
+  const [colNum, setColNum] = useState(26);
   const [fcs, setFcs] = useState([-1, -1])
   const initCells = [];
   for (let i = 0; i < rowNum; i++) {
