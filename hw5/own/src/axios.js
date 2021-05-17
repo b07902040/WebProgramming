@@ -19,7 +19,12 @@ const guess = async (number) => {
     } = await instance.get('/guess', { params: { number } })
     return msg
   } catch (error) {
-    return 'Error: "'+ number + '" is not a valid number (1 - 100)'
+    if ( error.response ) {
+      return "server not connected"
+    }
+    else {
+      return 'Error: "'+ number + '" is not a valid number (1 - 100)'
+    }
   }
 }
 
