@@ -46,7 +46,7 @@ class Station extends Component {
       }
       return (
         <div className="station-line-container">
-          <div className="station-and-name" id={id1} onClick={}> {/* you should add both id and onClick to attributes */}
+          <div className="station-and-name" id={id1}> {/* you should add both id and onClick to attributes */}
             <div className={rec}>{data.station_id}</div>
             <div className="station-name">{data.station_name}</div>
           </div>

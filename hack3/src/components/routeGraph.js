@@ -19,7 +19,7 @@ class RouteGraph extends Component {
           // use <Station /> with your own customized parameters
           // coding here ...
           data.map((station, i) => (
-            <Station station={station} key={i} handleOnClick={handleOnClick}/>
+            <Station station={station} key={i}/>
           ))
         }
       </div>

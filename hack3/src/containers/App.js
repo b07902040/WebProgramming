@@ -95,7 +95,7 @@ class App extends Component {
           <div className="route-graph-info-container">
             <RouteGraph route_data={line1} /> {/* you should pass data to child component with your own customized parameters */}
             <RouteGraph route_data={line2} /> {/* you should pass data to child component with your own customized parameters */}
-            <StationInfo /> {/* you shou  ld pass data to child component with your own customized parameters */}
+            <StationInfo single_data={this.state.data[this.state.current_station_id]}/> {/* you should pass data to child component with your own customized parameters */}
           </div>
           
         </div>
