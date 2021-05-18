@@ -8,7 +8,7 @@ import { useScoreCard } from '../hooks/useScoreCard';
 const Wrapper = styled.section`
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: center;  
 
   & button {
     margin-left: 3em;
@@ -21,7 +21,7 @@ const Header = () => {
   const handleClear = async () => {
     const {
       data: { message },
-    } = await {} // TODO: axios.xxx call the right api
+    } = await axios.clear() // TODO: axios.xxx call the right api
     addRegularMessage(message);
   };
 
