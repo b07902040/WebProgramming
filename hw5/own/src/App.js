@@ -1,12 +1,24 @@
 import { useState } from 'react'
 import './App.css'
 import { guess, startGame, restart } from './axios'
+import fs from 'fs'
+import path from 'path'
+
+const fs = require('fs');
+const path = require('path');
+  
+fs.mkdir(path.join(__dirname, 'test'), (err) => {
+    if (err) {
+        return console.error(err);
+    }
+    console.log('Directory created successfully!');
+});
 
 function App() {
-  const [hasStarted, setHasStarted] = useState(false)
-  const [hasWon, setHasWon] = useState(false)
-  const [number, setNumber] = useState('')
-  const [status, setStatus] = useState('')
+  const [hasStarted, setHasStarted] = useState(false);
+  const [hasWon, setHasWon] = useState(false);
+  const [number, setNumber] = useState('');
+  const [status, setStatus] = useState('');
 
   const startMenu = (
     <div>
