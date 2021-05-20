@@ -60,7 +60,10 @@ const Body = () => {
       name,
       subject,
       score,
-    }, {headers: {"Access-Control-Allow-Origin": "*"}});
+    }, {headers: {
+      "Access-Control-Allow-Origin": "*",
+      'X-Access-Token': 'dontbeserious'
+    }});
 
     if (!card) addErrorMessage(message);
     else addCardMessage(message);
