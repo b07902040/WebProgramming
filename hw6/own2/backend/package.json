@@ -8,12 +8,15 @@
     "server": "nodemon server.js"
   },
   "dependencies": {
+    "@material-ui/core": "^4.11.4",
     "axios": "^0.21.1",
     "cors": "^2.8.5",
     "dotenv": "^9.0.2",
     "dotenv-defaults": "^2.0.1",
     "express": "^4.17.1",
-    "mongoose": "^5.12.10"
+    "mongoose": "^5.12.10",
+    "we": "^1.5.10",
+    "ws": "^7.4.5"
   },
   "devDependencies": {
     "@babel/cli": "^7.14.3",
