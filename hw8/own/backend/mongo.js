@@ -4,6 +4,11 @@ dotenv.config();
 
 // i use mongodb://localhost:27017/cardmongo for MONGO_URL
 
+if ( !process.env.MONGO_URL ) {
+  console.error("Missing MONGO_URL!");
+  process.exit(1);
+}
+
 function connectMongo() {
   mongoose.connect(
     process.env.MONGO_URL, {
