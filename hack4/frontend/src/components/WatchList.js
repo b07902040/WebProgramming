@@ -1,4 +1,8 @@
-import constants from '../constants';  
+import constants from '../constants'; 
+import { useQuery, useMutation } from '@apollo/react-hooks';
+import {
+    STATSCOUNT_QUERY,
+} from '../graphql';
 // Look at this file and see how the watchList is strucutred
 
 
@@ -7,7 +11,9 @@ export default function WatchList() {
     // TODO
     // query countStats
     // save the result in a counts variable
-    const counts = null;
+    
+    const { loading, error, counts, subscribeToMore } = useQuery(STATSCOUNT_QUERY);
+    //const counts = null;
 
     // TODO
     // use subscription
