@@ -123,10 +123,10 @@ mutation insertPeople {
 `;
 
 function useInvalidData() {
-    cy.exec('cp ./src/invalid-data.json ./src/data.json');
+    cy.exec('copy src\\invalid-data.json src\\data.json');
 }
 function useValidData() {
-    cy.exec('cp ./src/valid-data.json ./src/data.json');
+    cy.exec('copy src\\valid-data.json src\\data.json');
 }
 
 

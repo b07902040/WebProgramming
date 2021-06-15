@@ -1,0 +1,35 @@
+type Query {
+  statsCount(severity: Int, locationKeywords: [String]): [Int!]
+}
+
+type Mutation {
+  insertPeople(data: [InsertPeopleInput]): Boolean
+}
+
+type Location {
+  name: String!
+  description: String!
+}
+
+type Person {
+  ssn: String!
+  name: String!
+  location: Location!
+  severity: Int!
+}
+
+input InsertPeopleInput {
+  ssn: String
+  name: String
+  location: LocationInput
+  severity: Int
+}
+
+input LocationInput {
+  name: String!
+  description: String!
+}
+
+
+
+
