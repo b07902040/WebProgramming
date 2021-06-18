@@ -19,10 +19,10 @@ type Person {
 }
 
 input InsertPeopleInput {
-  ssn: String
-  name: String
-  location: LocationInput
-  severity: Int
+  ssn: String!
+  name: String!
+  location: LocationInput!
+  severity: Int!
 }
 
 input LocationInput {
