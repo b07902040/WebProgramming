@@ -91,8 +91,8 @@ wss.on('connection', function connection(client) {
 
   client.on('message', async function incoming(message) {
     message = JSON.parse(message);
-
-    const { type } = message;
+ 
+    const { type } = message;   
 
     switch (type) {
       // on open chat box
@@ -108,18 +108,19 @@ wss.on('connection', function connection(client) {
         const chatBox = await validateChatBox(chatBoxName, [sender, receiver]);
 
         // if client was in a chat box, remove that.
-        if (chatBoxes[client.box])
+       /* if (chatBoxes[client.box])
           // user was in another chat box
-          chatBoxes[client.box].delete(client);
+          chatBoxes[client.box].delete(client);*/
 
         // use set to avoid duplicates
         client.box = chatBoxName;
         if (!chatBoxes[chatBoxName]) chatBoxes[chatBoxName] = new Set(); // make new record for chatbox
         chatBoxes[chatBoxName].add(client); // add this open connection into chat box
-
+        
         client.sendEvent({
           type: 'CHAT',
           data: {
+            to:to,
             messages: chatBox.messages.map(({ sender: { name }, body }) => ({
               name,
               body,
@@ -134,7 +135,7 @@ wss.on('connection', function connection(client) {
         const {
           data: { name, to, body },
         } = message;
-
+        //console.log(name+"->"+to+":"+body)
         const chatBoxName = makeName(name, to);
 
         const sender = await validateUser(name);
@@ -146,11 +147,12 @@ wss.on('connection', function connection(client) {
 
         chatBox.messages.push(newMessage);
         await chatBox.save();
-
         chatBoxes[chatBoxName].forEach((client) => {
           client.sendEvent({
             type: 'MESSAGE',
             data: {
+              key:chatBoxName,
+              to:to,
               message: {
                 name,
                 body,
