@@ -4,7 +4,23 @@ import { Tabs, Input, Tag } from "antd";
 import ChatModal from "../Components/ChatModal";
 
 const { TabPane } = Tabs;
+var restoreTab = true;
+
 const ChatRoom = ({me, displayStatus, server}) => {
+
+  const lastChatBoxes=JSON.parse(localStorage.getItem(me));
+  if(restoreTab===true && lastChatBoxes!==null){
+    for(var chatBox of lastChatBoxes){
+      var x=chatBox.split("_");
+      var name=(x[0]===me)?x[1]:x[0];
+      server.sendEvent({
+        type: 'CHAT',
+        data: { to: name, name: me },
+      }); 
+    }
+    restoreTab=false;
+  }
+
   const [chatBoxes, setChatBoxes] = useState([]);
   const [activeKey, setActiveKey] = useState("");
   const [messageInput, setMessageInput] = useState("");
@@ -95,11 +111,11 @@ const ChatRoom = ({me, displayStatus, server}) => {
   };
 
   useEffect(() => {
-    var cc=[];
-    for(var c in chatBoxes){
-      cc.push(c.key);
+    var chatBoxList=[];
+    for(var chatBox of chatBoxes){
+      chatBoxList.push(chatBox.key);
     }
-    localStorage.setItem(me, JSON.stringify(cc));
+    localStorage.setItem(me, JSON.stringify(chatBoxList));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[chatBoxes]);
 
@@ -119,19 +135,19 @@ const ChatRoom = ({me, displayStatus, server}) => {
             { friend, key, msg }) => {  
               return(              
                 <TabPane tab={friend}                
-                  key={key} closable={true}>                
-                  <p>{friend}'s chatbox.</p>
+                  key={key} closable={true} className="App-message">                
+                  <p  >{friend}'s chatbox.</p>
                     {msg.map((a,i)=>{
                       if(a.sender===me)
                       return(
-                          <p className="App-message" key={i} style={{float: 'right',clear: 'both'}}> 
+                          <p key={i} style={{float: 'right',clear: 'both'}}> 
                             {a.body+'\u00A0'}                  
                           <Tag color="blue">{a.sender}</Tag>    
                           </p>
                       );
                       else
                       return(
-                        <p className="App-message" key={i} style={{float: 'left',clear: 'both'}}>
+                        <p key={i} style={{float: 'left',clear: 'both'}}>
                           <Tag color="blue">{a.sender}</Tag>
                           {'\u00A0'+a.body}
                         </p>);

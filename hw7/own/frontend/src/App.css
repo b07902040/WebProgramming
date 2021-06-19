@@ -28,5 +28,9 @@
   margin: 20px;
   padding: 20px;
   overflow: auto;
-  word-break: normal;
+}
+
+.App-message {
+  white-space:normal;
+  word-break:break-all;
 }
