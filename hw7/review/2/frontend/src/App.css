@@ -30,39 +30,6 @@
   overflow: auto;
 }
 
-.message-content {
-    background-color: #e8e5e5;
-    color: #6a6767;
-    padding-left: 9px;
-    padding-right: 9px;
-    border-radius: 4px;
-    max-width: 300px;
-    overflow-wrap: break-word;
-}
-
-.sender {
-    padding-left: 8px;
-    padding-right: 8px;
-    font-weight: bold;
-}
-
-.message-wrapper {
-    display: flex;
-    flex-direction: row;
-    padding-top: 10px;
-    min-height: 40px;
-    line-height: 30px;
-}
-
-.sent-by-other {
-    justify-content: flex-start;
-}
-
-.sent-by-me {
-    justify-content: flex-end;
-}
-
-.overflow {
-    overflow: auto;
-    max-height: 200px;
+.App-message-right {
+  text-align: right
 }

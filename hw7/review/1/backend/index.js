@@ -8,7 +8,7 @@ const uuid = require('uuid');
 const mongo = require('./mongo');
 
 const app = express();
-require('dotenv-defaults').config();
+
 /* -------------------------------------------------------------------------- */
 /*                               MONGOOSE MODELS                              */
 /* -------------------------------------------------------------------------- */
@@ -86,20 +86,25 @@ const chatBoxes = {}; // keep track of all open AND active chat boxes
 wss.on('connection', function connection(client) {
   client.id = uuid.v4();
   client.box = ''; // keep track of client's CURRENT chat box
-  
+
   client.sendEvent = (e) => client.send(JSON.stringify(e));
 
+  console.log('Connected!')
   client.on('message', async function incoming(message) {
     message = JSON.parse(message);
-    
-    const [type, payload] = message;
 
+    const { type } = message;
+    console.log(type )
+    console.log(message.data)
     switch (type) {
       // on open chat box
       case 'CHAT': {
-        const { name, to } = payload;
-        console.log(name)
+        const {
+          data: { name, to },
+        } = message;
+
         const chatBoxName = makeName(name, to);
+        console.log(chatBoxName)
         const sender = await validateUser(name);
         const receiver = await validateUser(to);
         const chatBox = await validateChatBox(chatBoxName, [sender, receiver]);
@@ -116,7 +121,7 @@ wss.on('connection', function connection(client) {
 
         client.sendEvent({
           type: 'CHAT',
-          payload: {
+          data: {
             messages: chatBox.messages.map(({ sender: { name }, body }) => ({
               name,
               body,
@@ -128,10 +133,12 @@ wss.on('connection', function connection(client) {
       }
 
       case 'MESSAGE': {
-        const { name, to, body } = payload;
+        const {
+          data: { name, to, body },
+        } = message;
 
         const chatBoxName = makeName(name, to);
-
+        console.log(chatBoxName)
         const sender = await validateUser(name);
         const receiver = await validateUser(to);
         const chatBox = await validateChatBox(chatBoxName, [sender, receiver]);
@@ -142,12 +149,10 @@ wss.on('connection', function connection(client) {
         chatBox.messages.push(newMessage);
         await chatBox.save();
 
-        
         chatBoxes[chatBoxName].forEach((client) => {
           client.sendEvent({
             type: 'MESSAGE',
-            payload: {
-              chatBox: chatBoxName,
+            data: {
               message: {
                 name,
                 body,
@@ -167,6 +172,6 @@ wss.on('connection', function connection(client) {
 
 mongo.connect();
 
-server.listen(4000, () => {
-  console.log('Server listening at http://localhost:4000');
+server.listen(8080, () => {
+  console.log('Server listening at http://localhost:8080');
 });

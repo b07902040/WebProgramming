@@ -1,136 +1,103 @@
-import '../App.css';
-import { useState, useEffect } from 'react';
-import { Tabs, Input, message, Tag } from 'antd';
-import ChatModal from '../components/ChatModal'
+import "../App.css";
+import { useEffect, useState } from "react";
+import { Tag,Tabs, Input, message } from "antd";
+import ChatModal from './ChatModal'
 import useChatBox from '../hooks/useChatBox'
 import useChat from '../hooks/useChat'
-const { TabPane } = Tabs;
 
-const ChatRoom = ({ me }) => {
-    const { createChatBox, removeChatBox, chatBoxes } = useChatBox() ;
-    const { status, sendMessage } = useChat();
-    const [messageInput, setMessageInput] = useState("");
-    const [modalVisible, setModalVisible] = useState(false);
-    const [activeKey, setActiveKey] = useState("");
+const {TabPane} = Tabs;
+const ChatRoom = ({me})=>{
 
-    const addChatBox = () => { setModalVisible(true); };
-
-    const displayStatus = (payload) => {
-        if (payload.msg) {
-            const { type, msg } = payload
-            const content = {
-            content: msg, duration: 0.5 }
-            switch (type) {
-            case 'success':
-                message.success(content)
-                break
-            case 'error':
-            default:
-               message.error(content)
-                break
-    }}}
-
-    useEffect(() => {
-        displayStatus(status)}, [status])
-    
-    const style = {
-        display: 'flex',
-        justifyContent: "flex-end",
+    const [messageInput, setMessageInput] = useState("")
+    const [modalVisible, setModalVisible] = useState(false)
+    const [activeKey, setActiveKey] = useState("")
+    const addChatBox = ()=>{
+        setModalVisible(true)
     }
-    return(
-        <>
-            <div className="App-title"><h1>{me}'s Chat Room</h1></div>
+
+    const {chatBoxes,createChatBox, removeChatBox} = useChatBox(me,activeKey)
+
+
+    const {status, messages, sendMessage} = useChat()
+    useEffect(()=>{
+        console.log('CHAT')
+        if(activeKey !== "")
+            sendMessage({type: 'CHAT', data:{ name: me, to: activeKey.split('_')[1]}})
+    },[activeKey])
+
+    return (
+        <>  
+            <div className="App-title">
+                <h1>
+                    {me}'s chatRoom
+                </h1>
+            </div>
             <div className="App-messages">
                 <ChatModal
-                      visible={modalVisible}
-                      onCreate={({ name }) => {
-                        if (!name){
-                            displayStatus({
-                                type: "error",
-                                msg: "Missing your name"
-                            })
-                        }
-                        else{
-                            var newKey = createChatBox(me, name);
-                            setModalVisible(false);
-                            setActiveKey(newKey)
-                        }
-                      }}
-                      onCancel={() => {
-                        setModalVisible(false);
-                      }}
-                />
+                    onCreate={({name})=>{
+                        const new_key = createChatBox(name)
+                        console.log('Name;'+name)
+                        setActiveKey(new_key)
+                        // sendMessage({type: 'CHAT', data:{ name: me, to: name}})
+                        setModalVisible(false)
+                    }}
+                    onCancel={()=>setModalVisible(false)}
+                    visible={modalVisible}
+                >
+
+
+                </ChatModal>
                 <Tabs 
-                    type="editable-card"
-                    onEdit={(targetKey, action) => {
-                        if (action === "add") addChatBox();
-                        else if (action === "remove"){
-                            var newKey = removeChatBox(targetKey, activeKey);
-                            setActiveKey(newKey)
-                        } 
+                    type="editable-card" 
+                    onEdit={(targetKey, action)=>{
+                        if (action==='add') addChatBox()
+                        else if (action==='remove') {
+                            const new_key = removeChatBox(targetKey)
+                            setActiveKey(new_key)
+                        }
                     }}
                     activeKey={activeKey}
-                    onChange={(key) => { setActiveKey(key); }}
+                    onChange={(key) => {setActiveKey(key)}}
                 >
-                    {chatBoxes.map(({friend, key, chatlog}) =>
-                        {
-                            return(
-                                <TabPane tab={friend} key={key} closable={true}>
-                                    <p>{friend}'s chatbox</p>
-                                    {chatlog.map((message) => {
-                                        return(
-                                            <p>
-                                                {message.name === me?
-                                                    <div style={style}>
-                                                        <Tag color="#BEBEBE" style={{textOverflow: 'ellipsis'}}>{message.body}</Tag>
-                                                        <span>{message.name}</span>
-                                                    </div>
-                                                    :
-                                                    <div>
-                                                        <span style={{marginRight: "0.5rem"}}>{message.name}</span>
-                                                        <Tag color="#BEBEBE">{message.body}</Tag>
-                                                    </div>
-                                                }
-                                                
-                                            </p>
-                                        )
-                                    })}
-                                </TabPane>
-                            )
-                        }
-                    )}
+                    {chatBoxes.map((
+                        {friend, key, chatLog} 
+                    )=>(
+                        <TabPane tab={friend} key={key} closable={true} >
+                            <p> {friend}'s chatbox </p>
+                        </TabPane>
+                    ))}
                 </Tabs>
-                
-            </div>
-            <Input.Search
-                value = {messageInput}
-                onChange = {(e) => setMessageInput(e.target.value)}
-                enterButtton = "Send"
-                placeholder = "Enter message here ..."
-                onSearch={(msg) => {
-                    if (!msg) {
-                      displayStatus({
-                        type: "error",
-                        msg: "Please enter message.",
-                      });
-                      return;
-                    } else if (activeKey === "") {
-                      displayStatus({
-                        type: "error",
-                        msg: "Please add a chatbox first.",
-                      });
-                      setMessageInput("");
-                      return;
-                    }
-                    var friend = chatBoxes.find((chatBox) => chatBox.key === activeKey).friend
-                    sendMessage({ name: me, to: friend, body: msg });
-                    setMessageInput("");
-                  }}         
-            >    
-            </Input.Search>
-        </>
+                <div className="App-messages">
+                    {console.log('asd', messages) || messages.length === 0 ? ``: (
+                        messages.map(({name,body},i) => (
+                        <p key={i} align={name==me?'right':'left'}>
+                            <Tag color="blue">
+                            {name}</Tag> {body}
+                        </p>)))}
+                </div>
 
+                <Input.Search 
+                    value={messageInput}
+                    onChange={(e)=>setMessageInput(e.target.value)}
+                    enterButton="Send"
+                    placeholder="Enter message .."
+                    onSearch={(msg)=>{
+                        if(!msg) {
+                            message.error('add meesage!')
+                            return
+                        }else if(activeKey === ''){
+                            message.error('No created chatroom')
+                            setMessageInput("")
+                            return
+                        }
+                        sendMessage({type: 'MESSAGE', data:{ name: me, to:activeKey.split('_')[1], body:msg}})
+                        setMessageInput("")
+                    }}
+                ></Input.Search>
+            </div>
+        </>
     )
+
 }
 
-export default ChatRoom ;
+export default ChatRoom

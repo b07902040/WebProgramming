@@ -1,94 +1,60 @@
-import { useState } from 'react';
-
-const useChatBox = ({ me, activeKey }) => {
-    const [chatBoxes, setChatBoxes] = useState([]);
-
-    const createKey = (name) => {
-        return (me <= name)
-            ? `${me}_${name}`
-            : `${name}_${me}`;
-    };
-
-    const validChatBox = (friend) => {
-        const newKey = createKey(friend);
-        if (chatBoxes.some(({key}) => key === newKey)) {
-            return false;
-            // throw new Error(`${friend}'s ChatRoom has already been opened`);
+import { useState } from "react"
+const useChatBox = () => {
+    const [chatBoxes, setChatBoxes] = useState([])
+    const createChatBox = (friend, me, messages) => {
+        console.log(friend, me, messages)
+        console.log(chatBoxes)
+        const newKey = me <= friend?`${me}_${friend}`:`${friend}_${me}`
+        if(chatBoxes.some(({key}) => key === newKey)){
+            throw new Error(friend + "'s chat box has already opened.")
         }
-        return true;
+        const newChatBoxes = [...chatBoxes]
+        const chatLog = messages
+        newChatBoxes.push({friend, key: newKey, chatLog})
+        console.log(newChatBoxes)
+        setChatBoxes(newChatBoxes)
+        return newKey
     }
-
-    const createChatBox = (friend, messages) => {
-        const newKey = createKey(friend);
-        // if (chatBoxes.some(({key}) => key === newKey)) {
-        //     // return;
-        //     throw new Error(`${friend}'s ChatRoom has already been opened`);
-        // }
-        const newChatBoxes = [...chatBoxes];
-        const chatLog = messages;
-        if (!validChatBox(friend)) {
-            // chatBox exist
-            let index;
-            newChatBoxes.forEach(({ key }, i) => {
-                if (key === newKey) index = i;
-            });
-            newChatBoxes[index].chatLog = chatLog;
-        } else {
-            // not exist, add
-            newChatBoxes.push({ friend, key: newKey, chatLog });
-        }
-        setChatBoxes(newChatBoxes);
-        return newChatBoxes;
-    };
-
-    const removeChatBox = (targetKey) => {
-        let newActiveKey = activeKey;
-        let lastIndex = -1;
+    const removeChatBox = (targetKey, activeKey) => {
+        console.log("remove")
+        let newActiveKey = activeKey
+        let lastIndex
         chatBoxes.forEach(({ key }, i) => {
-            if (key === activeKey) lastIndex = i - 1;
-        });
-        const newChatBoxes = chatBoxes.filter((chatBox) => chatBox.key !== targetKey);
-        if (newChatBoxes.length) {
+            if (key === targetKey) { lastIndex = i - 1}})
+        const newChatBoxes = chatBoxes.filter(
+
+            (chatBox) => chatBox.key !== targetKey
+        )
+        if( newChatBoxes.length ){
             if (newActiveKey === targetKey) {
-                // close the current window
-                // change activeKey
-                if (lastIndex >= 0) {
-                    newActiveKey = newChatBoxes[lastIndex].key;
-                } else {
-                    newActiveKey = newChatBoxes[0].key;
+                if(lastIndex >= 0){
+                    newActiveKey = newChatBoxes[lastIndex].key
+                }
+                else{
+                    newActiveKey = newChatBoxes[0].key
                 }
             }
-        } else {
-            newActiveKey = '';
         }
-        setChatBoxes(newChatBoxes);
-        return newActiveKey;
-    };
-
-    const appendMessage = (message, name=undefined, target=undefined) => {
-        const newChatBoxes = [...chatBoxes];
-        let targetKey;
-        if (name !== undefined) {
-            // recover chat history
-            targetKey = createKey(name);
-        } else if (target !== undefined) {
-            targetKey = target;
-        } else {
-            targetKey = activeKey;
-        }
-        let index = -1;
-        chatBoxes.forEach(({ key }, i) => {
-            if (key === targetKey) index = i;
-        });
-        if (name !== undefined) {
-            newChatBoxes[index].chatLog.push(...message);
-        } else {
-            newChatBoxes[index].chatLog.push(message);
-        }
-        setChatBoxes(newChatBoxes);
+        else newActiveKey = "";
+        setChatBoxes(newChatBoxes)
+        return newActiveKey
     }
+    const addChat = (name, to, body) => {
+        const newKey = name <= to?`${name}_${to}`:`${to}_${name}`
+        let index = -1
+        chatBoxes.forEach((chatBox, i) => {
+            if(chatBox.key === newKey) index = i
+        })
+        if(index === -1){
+            console.log('error', chatBoxes, newKey)
+        }
+        else{
+            const newChatBoxes = [...chatBoxes]
+            newChatBoxes[index].chatLog.push({name, body})
+            setChatBoxes(newChatBoxes)
+        }
+    }
+    return [ chatBoxes, createChatBox, removeChatBox, addChat]
+}
 
-    return { chatBoxes, createChatBox, removeChatBox, appendMessage, validChatBox };
-};
-
-export default useChatBox;
+export default useChatBox

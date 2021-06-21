@@ -1,39 +1,35 @@
-import { Modal, Form, Input } from 'antd';
+import { Modal, Form, Input } from "antd"
 
-const ChatModal = ({ visible, onCreate, onCancel, displayStatus }) => {
-    const [form] = Form.useForm();
-    const submitFunction = () => {
-        form.validateFields().then((values) => {
-            form.resetFields();
-            onCreate(values);
-        }).catch((e) => {
-            displayStatus({
-                type: 'error',
-                msg: JSON.stringify(e.errorFields[0].errors[0])
-            });
-        });
-    }
+const ChatModal = ({ visible, onCreate, onCancel}) => {
+    const [form] = Form.useForm()
     return (
         <Modal
             visible={visible}
-            title='Create a new chat box'
-            okText='Create' cancelText='Cancel'
+            title="Create a new chat room"
+            okText="Create"
+            cancelText="Cancel"
             onCancel={onCancel}
-            onOk={submitFunction}
+            onOk={() => {
+                form.validateFields().then((values) => {
+                    form.resetFields();
+                    onCreate(values);
+                }).catch((e) => window.alert("please enter a nameof the person to chat"))
+            }}
         >
-            <Form form={form} layout='vertical' name='form_in_modal'>
+            <Form form={form} layout="vertical" name="form_in_modal">
                 <Form.Item
-                    name='name' label='name'
+                    name="name"
+                    label="Name"
                     rules={[{
                         required: true,
-                        message: 'Error: please enter the name of person to chat',
-                    },]}
+                        message: "Error: Please enter the name of the person to chat!"
+                    }]}
                 >
-                    <Input onPressEnter={submitFunction} autoFocus/>
+                    <Input/>
                 </Form.Item>
             </Form>
         </Modal>
-    );
-};
+    )
+}
 
-export default ChatModal;
+export default ChatModal

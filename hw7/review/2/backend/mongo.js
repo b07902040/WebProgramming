@@ -1,10 +1,7 @@
-// const mongoose = require('mongoose');
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
+require('dotenv').config()
 
 // i use mongodb://localhost:27017/cardmongo for MONGO_URL
-
-import dotenv from 'dotenv-defaults';
-dotenv.config();
 
 function connectMongo() {
   mongoose.connect(process.env.MONGO_URL, {
@@ -24,5 +21,4 @@ const mongo = {
   connect: connectMongo,
 };
 
-// module.exports = mongo;
-export default mongo;
+module.exports = mongo;

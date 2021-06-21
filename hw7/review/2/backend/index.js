@@ -1,20 +1,11 @@
-// const mongoose = require('mongoose');
-import mongoose from 'mongoose';
-// const http = require('http');
-import http from 'http';
-// const WebSocket = require('ws');
-import WebSocket from 'ws';
-// const express = require('express');
-import express from 'express';
-// const path = require('path');
-import path, { dirname } from 'path';
-// const uuid = require('uuid');
-import { v4 as uuidv4 } from 'uuid';
-import { fileURLToPath } from 'url';
-const __dirname = dirname(fileURLToPath(import.meta.url))
+const mongoose = require('mongoose');
+const http = require('http');
+const WebSocket = require('ws');
+const express = require('express');
+const path = require('path');
+const uuid = require('uuid');
 
-// const mongo = require('./mongo');
-import mongo from './mongo.js';
+const mongo = require('./mongo');
 
 const app = express();
 
@@ -93,51 +84,18 @@ const validateChatBox = async (name, participants) => {
 const chatBoxes = {}; // keep track of all open AND active chat boxes
 
 wss.on('connection', function connection(client) {
-  client.id = uuidv4();
+  client.id = uuid.v4();
   client.box = ''; // keep track of client's CURRENT chat box
 
   client.sendEvent = (e) => client.send(JSON.stringify(e));
 
   client.on('message', async function incoming(message) {
     message = JSON.parse(message);
+    console.log(message)
 
     const { type } = message;
 
     switch (type) {
-      // on init chat box (recover history)
-      case 'INIT': {
-            const {
-                data: { name },
-            } = message;
-
-            const sender = await validateUser(name);
-            let chat_box_key_list = [];
-            // await cannot be used in forEach
-            for (const id of sender.chatBoxes) {
-                const result = await ChatBoxModel.findOne({ '_id': id });
-                chat_box_key_list.push(result.name);
-            }
-            client.sendEvent({
-                type: 'INIT',
-                data: {
-                    chatBoxes: chat_box_key_list,
-                },
-            });
-            break;
-      }
-      // on close chat box
-      case 'CLOSE': {
-          const {
-              data: { name, key }
-          } = message;
-
-          const sender = await validateUser(name);
-          const chatBox = await validateChatBox(key, []);
-          const newChatBoxes = sender.chatBoxes.filter((c) => !c.equals(chatBox._id))
-          sender.chatBoxes = newChatBoxes;
-          await sender.save();
-          break;
-      }
       // on open chat box
       case 'CHAT': {
         const {
@@ -149,24 +107,11 @@ wss.on('connection', function connection(client) {
         const sender = await validateUser(name);
         const receiver = await validateUser(to);
         const chatBox = await validateChatBox(chatBoxName, [sender, receiver]);
-        // add chat box history in user model
-        // if exists
-        let exist = false;
-        sender.chatBoxes.forEach((c) => {
-            if (c.equals(chatBox._id)) exist = true;
-        });
-        if (!exist) {
-            sender.chatBoxes.push(chatBox)
-            await sender.save();
-        }
 
         // if client was in a chat box, remove that.
-        if (chatBoxes[client.box]){
+        if (chatBoxes[client.box])
           // user was in another chat box
           chatBoxes[client.box].delete(client);
-          console.log('changed!!closed!!');
-        }
-
 
         // use set to avoid duplicates
         client.box = chatBoxName;
@@ -176,11 +121,11 @@ wss.on('connection', function connection(client) {
         client.sendEvent({
           type: 'CHAT',
           data: {
-            name: to,
             messages: chatBox.messages.map(({ sender: { name }, body }) => ({
               name,
               body,
             })),
+            friend: to
           },
         });
 
@@ -211,6 +156,7 @@ wss.on('connection', function connection(client) {
               message: {
                 name,
                 body,
+                to
               },
             },
           });
@@ -220,7 +166,6 @@ wss.on('connection', function connection(client) {
 
     // disconnected
     client.once('close', () => {
-      console.log('closed!!');
       chatBoxes[client.box].delete(client);
     });
   });
