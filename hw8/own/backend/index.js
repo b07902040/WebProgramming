@@ -83,3 +83,95 @@ const validateChatBox = async (name, participants) => {
 
 const chatBoxes = {}; // keep track of all open AND active chat boxes
 
+wss.on('connection', function connection(client) {
+  client.id = uuid.v4();
+  client.box = ''; // keep track of client's CURRENT chat box
+
+  client.sendEvent = (e) => client.send(JSON.stringify(e));
+
+  client.on('message', async function incoming(message) {
+    message = JSON.parse(message);
+ 
+    const { type } = message;   
+
+    switch (type) {
+      // on open chat box
+      case 'CHAT': {
+        const {
+          data: { name, to },
+        } = message;
+
+        const chatBoxName = makeName(name, to);
+
+        const sender = await validateUser(name);
+        const receiver = await validateUser(to);
+        const chatBox = await validateChatBox(chatBoxName, [sender, receiver]);
+
+        // if client was in a chat box, remove that.
+       /* if (chatBoxes[client.box])
+          // user was in another chat box
+          chatBoxes[client.box].delete(client);*/
+
+        // use set to avoid duplicates
+        client.box = chatBoxName;
+        if (!chatBoxes[chatBoxName]) chatBoxes[chatBoxName] = new Set(); // make new record for chatbox
+        chatBoxes[chatBoxName].add(client); // add this open connection into chat box
+        
+        client.sendEvent({
+          type: 'CHAT',
+          data: {
+            to:to,
+            messages: chatBox.messages.map(({ sender: { name }, body }) => ({
+              name,
+              body,
+            })),
+          },
+        });
+
+        break;
+      }
+
+      case 'MESSAGE': {
+        const {
+          data: { name, to, body },
+        } = message;
+        //console.log(name+"->"+to+":"+body)
+        const chatBoxName = makeName(name, to);
+
+        const sender = await validateUser(name);
+        const receiver = await validateUser(to);
+        const chatBox = await validateChatBox(chatBoxName, [sender, receiver]);
+
+        const newMessage = new MessageModel({ sender, body });
+        await newMessage.save();
+
+        chatBox.messages.push(newMessage);
+        await chatBox.save();
+        chatBoxes[chatBoxName].forEach((client) => {
+          client.sendEvent({
+            type: 'MESSAGE',
+            data: {
+              key:chatBoxName,
+              to:to,
+              message: {
+                name,
+                body,
+              },
+            },
+          });
+        });
+      }
+    }
+
+    // disconnected
+    client.once('close', () => {
+      chatBoxes[client.box].delete(client);
+    });
+  });
+});
+
+mongo.connect();
+require('events').EventEmitter.prototype._maxListeners = 100;
+server.listen(8080, () => {
+  console.log('Server listening at http://localhost:8080');
+});

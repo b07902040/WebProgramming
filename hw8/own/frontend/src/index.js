@@ -1,9 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
 import "antd/dist/antd.css";
+import App from './App';
 import {
   ApolloClient,
   InMemoryCache,
@@ -14,15 +13,16 @@ import { split } from "apollo-link";
 import { WebSocketLink } from "apollo-link-ws";
 import { getMainDefinition } from "apollo-utilities";
 
+import reportWebVitals from './reportWebVitals';
+
 // Create an http link:
 const httpLink = new HttpLink({
-  uri: 'http://localhost:5000/',
+  uri: "http://localhost:5000/",
 });
 
 // Create a WebSocket link:
 const wsLink = new WebSocketLink({
   uri: `ws://localhost:5000/`,
-  options: { reconnect: true },
 });
 
 const link = split(
@@ -47,7 +47,7 @@ ReactDOM.render(
   <ApolloProvider client={client}>
     <App />
   </ApolloProvider>,
-  document.getElementById('root')
+  document.getElementById("root")
 );
 
 // If you want to start measuring performance in your app, pass a function

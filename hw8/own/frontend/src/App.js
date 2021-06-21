@@ -5,6 +5,12 @@ import SignIn from './Containers/SignIn';
 import { message } from "antd";
 
 const LOCALSTORAGE_KEY = "save-me";
+
+const server = new WebSocket('ws://localhost:8080');
+server.onopen = () => console.log('Connect server scucess.');
+server.sendEvent = (e) => server.send(JSON.stringify(e));
+
+
 const App = () => {
   const savedMe = localStorage.getItem(LOCALSTORAGE_KEY);
   const [signedIn, setSignedIn] = useState(false);
@@ -34,7 +40,7 @@ const App = () => {
 
   return (
     <div className="App">
-      {signedIn? (<ChatRoom me={me} displayStatus={displayStatus} />) : (
+      {signedIn? (<ChatRoom me={me} displayStatus={displayStatus} server={server}/>) : (
         <SignIn
           me={me}
           setMe={setMe}
