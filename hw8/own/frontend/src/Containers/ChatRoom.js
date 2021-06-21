@@ -42,7 +42,12 @@ const ChatRoom = ({me, displayStatus, server}) => {
         var sender=msg.data.message.name;
         var to=msg.data.to;
         var body=msg.data.message.body;
-        updateChatBox(key, body, sender, to);
+        if ( sender !== me ) {
+          updateChatBox(key, body, sender, to);
+        }
+        else {
+          updateMyChatBox(key, body, sender, to)
+        }
         break;
       }
       default: {}
@@ -51,10 +56,35 @@ const ChatRoom = ({me, displayStatus, server}) => {
 
 
   const updateChatBox = (key, body, sender, to) => {
+    console.log("hi");
+    const newChatBoxes = [...chatBoxes];
+    for(var ChatBox of newChatBoxes){
+        if(ChatBox.key===key) {
+          ChatBox.msg.push({sender:sender, to:to, body:body});
+          ChatBox.newMsg = ChatBox.newMsg+1;
+          break;
+        }
+    }
+    setChatBoxes(newChatBoxes);  
+  }
+
+  const updateMyChatBox = (key, body, sender, to) => {
+    const newChatBoxes = [...chatBoxes];
+    for(var ChatBox of newChatBoxes){
+        if(ChatBox.key===key) {
+          ChatBox.msg.push({sender:sender, to:to, body:body});
+          ChatBox.newMsg = ChatBox.newMsg = 0;
+          break;
+        }
+    }
+    setChatBoxes(newChatBoxes);  
+  }
+
+  const updateBadge = (key) => {
     const newChatBoxes = [...chatBoxes];
     for(var ChatBox of newChatBoxes){
         if(ChatBox.key===key){
-          ChatBox.msg.push({sender:sender, to:to, body:body});
+          ChatBox.newMsg = 0;
             break;
         }
     }
@@ -79,7 +109,7 @@ const ChatRoom = ({me, displayStatus, server}) => {
       var body=m.body;
       chatLog.push({sender:sender, to:to, body:body});
     }
-    newChatBoxes.push({ friend, key: newKey, msg:chatLog});
+    newChatBoxes.push({ friend, key: newKey, msg:chatLog, newMsg: 0});
     setChatBoxes(newChatBoxes);
     setActiveKey(newKey);
   };
@@ -133,7 +163,12 @@ const ChatRoom = ({me, displayStatus, server}) => {
         <Tabs 
           type="editable-card"
           activeKey={activeKey}
-          onChange={(key) => { setActiveKey(key); }} 
+          onChange={
+            (key) => { 
+              setActiveKey(key);
+              updateBadge(key);
+            }
+          } 
           onEdit={(targetKey, action) => {
             if (action === "add") addChatBox();
             else if (action === "remove") removeChatBox(targetKey);}}
@@ -141,7 +176,7 @@ const ChatRoom = ({me, displayStatus, server}) => {
           {chatBoxes.map((
             { friend, key, msg, newMsg }) => {  
               return(         
-                  <TabPane tab={<Badge count={newMsg} >{friend}</Badge>}                
+                  <TabPane tab={<Badge count={newMsg} >{friend}</Badge> }                
                     key={key} closable={true}>                
                     <p  >{friend}'s chatbox.</p>
                       {msg.map((a,i)=>{
