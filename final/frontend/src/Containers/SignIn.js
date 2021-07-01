@@ -1,7 +1,7 @@
 import "../App.css";
 import { Form, Input, Button, Checkbox, Row, Col } from "antd";
-import { useState, useEffect } from "react";
-import { UserOutlined } from "@ant-design/icons";
+import { useState } from "react";
+
 
 const SignIn = ({ me, setMe, setNewEvent, setPollDates, 
   displayStatus, server, setsendEventName, setCurrentUserName, 
@@ -16,16 +16,13 @@ const SignIn = ({ me, setMe, setNewEvent, setPollDates,
           type: "error",
           msg: "Event doesn't exist.",
         });
-        //setEventName("");
-        //setEventCode("");
         break;
       }
       case 'EventCodeError': {
         displayStatus({
           type: "error",
-          msg: "Invaild Invitation Code",
+          msg: "Invaild Invite Code",
         });
-        //setEventCode("");
         break;
       }
       case 'PasswordError': {
@@ -33,7 +30,6 @@ const SignIn = ({ me, setMe, setNewEvent, setPollDates,
           type: "error",
           msg: "Invalid Password",
         });
-        //setPassword("");
         break;
       }
       case 'Check-OK-Login': {
@@ -50,8 +46,6 @@ const SignIn = ({ me, setMe, setNewEvent, setPollDates,
           type: "error",
           msg: "Event Already Exists",
         });
-        setEventName("");
-        setEventCode("");
         break;
       }
 
@@ -78,24 +72,27 @@ const SignIn = ({ me, setMe, setNewEvent, setPollDates,
   const [password, setPassword] = useState("");
   const [eventName, setEventName] = useState("");
   const [eventCode, setEventCode] = useState("");
+  const [isNewEvent, setIsNewEvent] = useState(false);
 
   return (
-    <>
-      <div className="App-title"><h1>Login</h1></div>
+    <div >
+      <div className="App-title" style={{ marginBottom:45 }}><h1>Polling Events</h1></div>
       <Row>
-        <Col span={8} offset={8}>
+        <Col span={6} offset={9}>
           <Form
             name="basic"
             layout="vertical"  
             initialValues={{
               remember: true,
             }}
+            
             onFinish={onFinish}
             onFinishFailed={onFinishFailed}
           >
         <Form.Item
-          label="Event Name"
+          label="Event name"
           name="Event Name"
+          style={{ color: "white" }}
           rules={[
             {
               required: true,
@@ -108,12 +105,12 @@ const SignIn = ({ me, setMe, setNewEvent, setPollDates,
             onChange={ (e) => {setEventName(e.target.value)} }/>
         </Form.Item>
         <Form.Item
-          label="Invitation Code"
-          name="Invitation Code"
+          label="Invite code"
+          name="Invite Code"
           rules={[
             {
               required: true,
-              message: 'Please Input Invitation Code!',
+              message: 'Please Input Invite Code!',
             },
           ]}
         >
@@ -137,8 +134,8 @@ const SignIn = ({ me, setMe, setNewEvent, setPollDates,
         </Form.Item>
 
         <Form.Item
-          label="Password(Optional)"
-          name="password"
+          label="Password (Only for this event)"
+          name="Password (Only for this event)"
           rules={[
             {
               required: false,
@@ -154,41 +151,31 @@ const SignIn = ({ me, setMe, setNewEvent, setPollDates,
           name="remember"
           valuePropName="checked"
         >
-          <Checkbox>Remember me</Checkbox>
+          <Checkbox style={{color: "white" }}>Remember me</Checkbox>
         </Form.Item>
 
         <Form.Item>
+          <div>
+            <nobr style={{color: "white" }}>Don't have a Event?  </nobr>
+              <Checkbox
+                style={{ marginBottom: 20, marginLeft: 20, color: "white" }} 
+                onChange={(e) => {
+                  setIsNewEvent(!isNewEvent);
+                }}
+              >
+                New Event
+              </Checkbox>
+          </div>
           <Button 
             type="primary" 
             style={{ width: 100, margin: 10 }}
             htmlType="Enter" 
             onClick={ () => {
               if ( userName!=="" && eventName!=="" && eventCode!=="") {
-                server.sendEvent({
-                  type: 'UserLogin',
-                  data: {
-                    username: userName,
-                    password: password,
-                    eventName: eventName,
-                    eventCode: eventCode, 
-                  },
-                });
-              }
-            }}
-          >
-            Enter
-          </Button>
-          <div>
-            <nobr>Don't have a Event?</nobr>
-            <Button 
-              type="link"
-              style={{ width: 100 }} 
-              htmlType="Enter" 
-              onClick={ () => {
-                if ( userName!=="" && eventName!=="" && eventCode!=="") {
+                if (isNewEvent) {
                   server.sendEvent({
                     type: 'Check-to-Create',
-                      data: {
+                      data:{
                         username: userName,
                         password: password,
                         eventName: eventName,
@@ -196,16 +183,26 @@ const SignIn = ({ me, setMe, setNewEvent, setPollDates,
                       },
                   });
                 }
-              }}
-            >
-              New Event
-            </Button>
-          </div>
+                else {
+                  server.sendEvent({
+                    type: 'UserLogin',
+                    data: {
+                      username: userName,
+                      password: password,
+                      eventName: eventName,
+                      eventCode: eventCode, 
+                    },
+                  });
+                }
+              }
+            }}
+          >
+            Enter
+          </Button>
         </Form.Item>
       </Form></Col> 
-      </Row>
-      
-    </>
+      </Row> 
+    </div>
   );
 };
 

@@ -4,13 +4,12 @@ import CreateEvent from './Containers/CreateEvent';
 import SignIn from './Containers/SignIn';
 import PollDates from './Containers/PollDates';
 import { message } from "antd";
-
+import Background from "./beach.jpg";
 const LOCALSTORAGE_KEY = "save-me";
 
-const server = new WebSocket('ws://localhost:8080');
+const server = new WebSocket('ws://localhost:5050');
 server.onopen = () => console.log('Connect server scucess.');
 server.sendEvent = (e) => server.send(JSON.stringify(e));
-
 
 const App = () => {
   const savedMe = localStorage.getItem(LOCALSTORAGE_KEY);
@@ -46,20 +45,23 @@ const App = () => {
     }
   }
   return (
-    <div className="App">
+    <div className="App" style={{backgroundImage: `url(${Background})`}}>
       { (pollDates)?  (
         <PollDates 
           server={server}
           eventName={eventName}
           eventCode={eventCode}
           currentUserName={currentUserName}
+          displayStatus={displayStatus}
+          setNewEvent={setNewEvent}
+          setPollDates={setPollDates}
         />) : ( (newEvent)? (
         <CreateEvent 
           displayStatus={displayStatus}
           setPollDates={setPollDates} 
           server={server}
           eventName={eventName}
-          eventCode={eventCode}
+          getEventCode={eventCode}
           currentUserName={currentUserName}
           password={password}
           setsendEventName={setEventName}

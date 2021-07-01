@@ -7,11 +7,11 @@ import { Select, Calendar, Tag } from "antd";
 function toValidArray(value) {
   const arr = Array.isArray(value) ? value : [value];
 
-  return arr.filter(e => e != null && e != undefined); // must be ==
+  return arr.filter(e => e != null && e !== undefined); // must be ==
 }
 
 const MultipleDatePicker = React.forwardRef((props, ref) => {
-  const { onChange = () => {}, value, format = "YY/MM/DD" } = props;
+  const { onChange = () => {}, value, format = "YYYY/MM/DD" } = props;
 
   const arrValues = useMemo(() => toValidArray(value), [value]);
 

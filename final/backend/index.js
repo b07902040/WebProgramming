@@ -6,6 +6,7 @@ const path = require('path');
 const uuid = require('uuid');
 const mongo = require('./mongo');
 const app = express();
+const PORT = process.env.PORT || 5050;
 
 /* -------------------------------------------------------------------------- */
 /*                               MONGOOSE MODELS                              */
@@ -18,18 +19,6 @@ const userSchema = new Schema({
   password: { type: String },
 });
 
-const messageSchema = new Schema({
-  chatBox: { type: mongoose.Types.ObjectId, ref: 'ChatBox' },
-  sender: { type: mongoose.Types.ObjectId, ref: 'User' },
-  body: { type: String, required: true },
-});
-
-const chatBoxSchema = new Schema({
-  name: { type: String, required: true },
-  users: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
-  messages: [{ type: mongoose.Types.ObjectId, ref: 'Message' }],
-});
-
 const eventSchema = new Schema({
   name: { type: String, required: true },
   code: { type: String, required: true },
@@ -38,19 +27,20 @@ const eventSchema = new Schema({
     month: { type: String },
     day: { type: String },
     week: { type: String },
+    time_s: { type: String },
+    time_end: { type: String },
   }],
-  times: [{ type: Number, require: true }],
-  rawtimes: [{ type:Date }],
   result: [{
     username: { type: String },
     dateIsValid: [{ type: Boolean }],
   }],
+  docs: { type: String },
+  isHidden: { type: Boolean },
+  creater: { type: String },
   //data_index_num: [{ type: Number }],
 });
 
 const UserModel = mongoose.model('User', userSchema);
-const ChatBoxModel = mongoose.model('ChatBox', chatBoxSchema);
-const MessageModel = mongoose.model('Message', messageSchema);
 const EventModel = mongoose.model('Event', eventSchema);
 
 Object.size = function(obj) {
@@ -67,9 +57,7 @@ Object.size = function(obj) {
 /* -------------------------------------------------------------------------- */
 const server = http.createServer(app);
 
-const wss = new WebSocket.Server({
-  server,
-});
+const wss = new WebSocket.Server({server});
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -172,20 +160,22 @@ wss.on('connection', function connection(client) {
             userName,
             password,
             dates,
-            times,
-            rawtimes,
+            docs,
+            isHidden,
+            creater
           },
         } = message; 
-        const exist = await EventModel.findOne({name: eventName, code: eventCode});
+        const exist = false;
         if ( !exist ) {
           const result = [];
           const newEvent = new EventModel({ 
             name: eventName,
             code: eventCode,
             dates: dates,
-            times: times,
-            rawtimes: rawtimes,
             result: result,
+            docs: docs,
+            isHidden: isHidden,
+            creater: creater,
           });
           await newEvent.save();
           console.log("Create event success.");
@@ -216,8 +206,10 @@ wss.on('connection', function connection(client) {
               name: exist.name,
               code: exist.code,
               dates: exist.dates,
-              times: exist.times,
               result: exist.result,
+              docs: exist.docs,
+              isHidden: exist.isHidden,
+              creater: exist.creater,
             },
           });
           console.log('Sent event to client');
@@ -249,8 +241,10 @@ wss.on('connection', function connection(client) {
               name: exist.name,
               code: exist.code,
               dates: exist.dates,
-              times: exist.times,
               result: exist.result,
+              docs: exist.docs,
+              isHidden: exist.isHidden,
+              creater: exist.creater,
             },
           });
           console.log('Sent updated event to client');
@@ -268,13 +262,6 @@ wss.on('connection', function connection(client) {
           },
         } = message;
 
-        await EventModel.updateOne(
-          { "name": name, "code": code },
-          {$pull:{ result: { username: username } },
-        });
-
-        console.log('Reset selected date success');
-
         const exist = await EventModel.findOne({name: name, code: code});
         if ( exist ) {
           client.sendEvent({
@@ -283,15 +270,26 @@ wss.on('connection', function connection(client) {
               name: exist.name,
               code: exist.code,
               dates: exist.dates,
-              times: exist.times,
               result: exist.result,
+              docs: exist.docs,
+              isHidden: exist.isHidden,
+              creater: exist.creater,
             },
           });
-          console.log('Sent reseted event to client');
+          console.log('Sent raw event to client');
         }
+
+        await EventModel.updateOne(
+          { "name": name, "code": code },
+          {$pull:{ result: { username: username } },
+        });
+
+        console.log('Reset selected date success');
 
         break;
       }
+
+      default: { break;}
 
     }
 
@@ -304,6 +302,6 @@ wss.on('connection', function connection(client) {
 
 mongo.connect();
 
-server.listen(8080, () => {
-  console.log('Server listening at http://localhost:8080');
+server.listen(PORT, () => {
+  console.log('Server listening at http://localhost:5050');
 });
