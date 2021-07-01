@@ -1,7 +1,7 @@
 import "../App.css"
 import { useEffect, useState } from "react"
 import { Tabs, Input, Tag } from "antd"
-import ChatModal from "../components/ChatModal"
+import ChatModal from "../Components/ChatModal"
 import useChatBox from "../hooks/useChatBox"
 import useChat from "../hooks/useChat"
 

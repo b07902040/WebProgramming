@@ -1,7 +1,7 @@
 import './App.css';
 import { useState, useEffect } from "react";
-import ChatRoom from './containers/ChatRoom';
-import SignIn from './containers/SignIn';
+import ChatRoom from './Containers/ChatRoom';
+import SignIn from './Containers/SignIn';
 import { message } from 'antd';
 
 const LOCALSTORAGE_KEY = "save-me"

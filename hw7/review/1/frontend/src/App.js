@@ -1,8 +1,8 @@
 import logo from './logo.svg';
 import './App.css';
 import { useState, useEffect } from "react";
-import ChatRoom from './Containers/ChatRoom'
-import SignIn from './Containers/SignIn'
+import ChatRoom from './containers/ChatRoom';
+import SignIn from './containers/SignIn';
 
 
 const LOCALSTORAGE_KEY = "save-me"
