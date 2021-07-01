@@ -1,0 +1,109 @@
+.App-title {
+  text-align: center;
+}
+
+.App-title h1 {
+  margin: 0;
+  margin-right: 20px;
+  font-size: 3em;
+  font-family: sans-serif;
+}
+
+.App-subtitle {
+  text-align: center;
+}
+
+.App {
+  font-family: sans-serif;
+  text-align: center;
+  margin-top: 2rem;
+  margin-left: 2rem;
+}
+
+.selectedDate {
+  background: #40a9ff;
+  color: white;
+  margin: 3px;
+}
+
+.calendar {
+  width: 100%;
+  max-width: 430px;
+}
+
+.select {
+  width: 430px;
+  align-items: center;
+}
+
+.time-picker {
+  width: 430px;
+  text-align: center;
+  margin-top: 350px;
+}
+
+.Input-NewEventTime {
+  min-width: 430px;
+  max-width: 430px;
+  text-align: center;
+}
+
+.column-month {
+  font-family: sans-serif;
+  text-align: center;
+  margin-top: 4px;
+  margin-bottom: 0px;
+  font-size: 6px;
+  font-weight: bold;
+  color: #245484;
+}
+
+.column-day {
+  font-family: sans-serif;
+  text-align: center;
+  margin-top: -4px;
+  margin-bottom: -4px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #0080FF;
+}
+
+.column-week {
+  font-family: sans-serif;
+  text-align: center;
+  margin-top: 0px;
+  margin-bottom: 4px;
+  font-size: 6px;
+  font-weight: bold;
+  color:#245484;
+  
+}
+
+.column-year {
+  font-family: sans-serif;
+  text-align: center;
+}
+
+.column-participant {
+  font-family: sans-serif;
+  text-align: center;
+  font-weight:bold;
+  color: 	#0080FF;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+.column-name {
+  font-family: sans-serif;
+  text-align: center;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+.column-checkbox {
+  align-items: center;
+}
+
+.table-column {
+  align-items: center;
+}
