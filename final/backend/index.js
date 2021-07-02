@@ -37,7 +37,6 @@ const eventSchema = new Schema({
   docs: { type: String },
   isHidden: { type: Boolean },
   creater: { type: String },
-  //data_index_num: [{ type: Number }],
 });
 
 const UserModel = mongoose.model('User', userSchema);

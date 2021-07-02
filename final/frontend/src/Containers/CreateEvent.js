@@ -7,6 +7,7 @@ import { RightOutlined } from '@ant-design/icons';
 const CreateEvent = ({displayStatus, setNewEvent, setPollDates, server,
   eventName,
   getEventCode,
+  setsendEventCode,
   currentUserName,
   password}) => {
 
@@ -97,7 +98,10 @@ const CreateEvent = ({displayStatus, setNewEvent, setPollDates, server,
                 value={eventCode}
                 placeholder={eventCode}
                 size="small"
-                onChange={ (e) => {setEventCode(e.target.value)} }
+                onChange={ (e) => {
+                  setEventCode(e.target.value);
+                  setsendEventCode(e.target.value);
+                }}
               />
             </Form.Item>
             </Form>
@@ -247,7 +251,7 @@ const CreateEvent = ({displayStatus, setNewEvent, setPollDates, server,
             dateUp = dateUp.sort((a,b) => {
               return ('' + a.forSort).localeCompare(b.forSort);
             });
-            console.log(isHidden);
+            console.log(e)
             server.sendEvent({
               type: 'CreateEvent-and-User',
               data: {

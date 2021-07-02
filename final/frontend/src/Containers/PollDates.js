@@ -25,6 +25,7 @@ const PollDates = ({server, eventName, eventCode, currentUserName,
   },[data]);
   
   if ( first ) {
+    console.log("Polldate: ", eventCode);
     server.sendEvent({
       type: 'RequestEvent',
       data: { eventName: eventName, eventCode: eventCode },

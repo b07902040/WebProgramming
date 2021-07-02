@@ -65,6 +65,7 @@ const App = () => {
           currentUserName={currentUserName}
           password={password}
           setsendEventName={setEventName}
+          setsendEventCode={setEventCode}
           setNewEvent={setNewEvent}
         />) : (
           <SignIn
